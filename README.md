@@ -1,50 +1,52 @@
-Sure! Here's a cleanly **structured and properly formatted `README.md`** file for your Multi-Agent AI File Processor. You can copy and paste this directly into your project as `README.md`.
+# Multi-Agent AI File Processor
+
+## Objective
+
+This project implements a multi-agent AI system that processes files in **PDF**, **JSON**, and **Email (TXT/EML)** formats. The system detects file types and classifies intent (e.g., *Invoice*, *Request for Quote (RFQ)*, *Complaint*) before routing the file content to a dedicated processing agent.
+
+It includes a shared memory system for logging and coordination between agents, enabling traceability and batch or web-based processing.
 
 ---
 
-````markdown
-# 🧠 Multi-Agent AI File Processor
+## Overview
 
-## 📌 Objective
+### Agents
 
-Build a **multi-agent AI system** that accepts files in **PDF**, **JSON**, or **Email (text)** formats, classifies both the **file type** and **intent**, and routes the content to a specialized agent for processing. The system uses a **shared memory module** to maintain context, traceability, and logs across agents.
+- **Classifier Agent**  
+  Identifies the file format and intent, and dispatches the content to the appropriate agent.
 
-> This tool helps automate and organize unstructured inputs, making document workflows faster and smarter.
+- **JSON Agent**  
+  Processes structured JSON files by validating required fields and detecting missing ones.
 
----
+- **Email Agent**  
+  Extracts metadata (sender, urgency) and identifies the intent from raw email text.
 
-## ⚙️ Overview
+### Shared Memory
 
-The system includes three specialized agents:
-
-- 🧩 **Classifier Agent**  
-  Detects the file format and intent (e.g., *Invoice*, *RFQ*, *Complaint*) and routes the content accordingly.
-
-- 📬 **Email Agent**  
-  Parses sender, subject, urgency, and determines intent from plain-text email files.
-
-- 🧾 **JSON Agent**  
-  Processes structured JSON files, checks for required fields, and flags missing ones.
-
-A lightweight **SQLite-based shared memory** module tracks extracted values and logs processing data.
+- A lightweight SQLite-based logging system that stores:
+  - File metadata
+  - Extracted content
+  - Format and intent classification
+  - Thread IDs for contextual continuity
 
 ---
 
-## ✨ Features
+## Features
 
-- ✅ Automatic format detection: PDF, JSON, Email
-- ✅ Intent classification (Invoice, RFQ, Complaint, etc.)
-- ✅ Specialized agents per file type
-- ✅ Shared SQLite memory for logs and context
-- ✅ Batch file processing via script
-- ✅ Interactive web upload interface (Flask)
-- ✅ Structured JSON result output
+- Automatic format detection (PDF, JSON, Email)
+- Intent classification using keyword heuristics and field matching
+- Modular agent-based architecture
+- SQLite logging for auditability and debugging
+- Batch processing via command line
+- Flask-based web interface for real-time uploads and results
+- Clean, structured JSON output
 
 ---
 
-## 🛠 Installation
+## Installation
 
 ### 1. Clone the repository
+
 ```bash
 git clone https://github.com/yourusername/multi-agent-ai.git
 cd multi-agent-ai
@@ -52,25 +54,19 @@ cd multi-agent-ai
 
 ### 2. Create and activate a virtual environment
 
-<details>
-<summary>On macOS/Linux</summary>
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
-</details>
-
-<details>
-<summary>On Windows</summary>
+**On Windows:**
 
 ```bash
 python -m venv venv
 venv\Scripts\activate
 ```
 
-</details>
+**On macOS/Linux:**
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
 
 ### 3. Install dependencies
 
@@ -80,64 +76,70 @@ pip install -r requirements.txt
 
 ---
 
-## 🚀 Running the Program
+## Running the Program
 
-### 🧾 Batch File Processing
+### Option 1: Batch Processing (Command Line)
 
-1. Place your test files (PDF, JSON, TXT/EML) inside the `data/` folder.
-2. Run the batch processing script:
+1. Place test files (`.pdf`, `.json`, `.txt`, `.eml`) into the `data/` directory.
+2. Run the batch processor:
 
 ```bash
 python batch_process.py
 ```
 
-You’ll see the format, intent, and extracted metadata printed to the console.
+This will display format, intent, and extracted information in the console.
 
 ---
 
-### 🌐 Launch the Web Interface
+### Option 2: Web Interface (Flask App)
 
-1. Start the Flask server:
+1. Start the Flask development server:
 
 ```bash
 python web/app.py
 ```
 
-2. Open your browser and navigate to:
+2. Open a browser and navigate to:
 
 ```
 http://127.0.0.1:5000
 ```
 
-3. Upload a file and view the parsed results in JSON.
+3. Upload a file and view the structured result in the web interface.
 
 ---
 
-## 🧠 How It Works
+## How It Works
 
-1. User uploads a file or the system reads from `data/`.
-2. `ClassifierAgent` detects the file format and intent.
-3. The file is routed to:
+1. The user uploads or provides a file path.
+2. The **Classifier Agent** determines the format and classifies the intent.
+3. Based on the result, the file is routed to:
 
-   * `JSONAgent` for structured data.
-   * `EmailAgent` for unstructured email content.
-   * PDF text is extracted using PyMuPDF.
-4. Shared memory logs the processing data.
-5. The result is returned in structured JSON.
+   * `JSONAgent` for structured validation
+   * `EmailAgent` for text parsing
+   * PDF content is extracted using `PyMuPDF` and then classified
+4. Extracted data is logged in the SQLite database.
+5. Output is returned as structured JSON.
 
 ---
 
-## 📦 Dependencies
+## Dependencies
 
 * Python 3.x
 * Flask
-* PyMuPDF (`fitz`) for PDF extraction
-* SQLite3 (built-in)
-* Standard libraries: `os`, `json`, `tempfile`, etc.
+* PyMuPDF (`fitz`)
+* SQLite3 (default in Python)
+* Standard Python libraries: `json`, `os`, `tempfile`, `sqlite3`, etc.
+
+Install them via:
+
+```bash
+pip install -r requirements.txt
+```
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 multi-agent-ai/
@@ -164,18 +166,11 @@ multi-agent-ai/
 
 ---
 
-## 📝 Notes
+## Notes
 
-* Sample files go in the `data/` folder.
-* `shared_memory.db` is auto-created on first run.
-* You can extend the system easily by:
-
-  * Adding new file types
-  * Implementing more agents
-  * Expanding intent classification
+* Ensure test files are placed in the `data/` folder before batch execution.
+* The SQLite database `shared_memory.db` is created on the first run automatically.
+* The system is modular and can be extended by adding new agents or refining intent detection logic.
 
 ---
 
-Enjoy using the **Multi-Agent AI File Processor** to simplify your document processing! 🚀
-
-```
