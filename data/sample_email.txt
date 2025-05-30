@@ -1,0 +1,11 @@
+From: user@acme.com
+Subject: Request for Quote
+
+Hello team,
+
+Please send me a quote for 200 widgets.
+
+This is urgent.
+
+Thanks,
+Purchasing
